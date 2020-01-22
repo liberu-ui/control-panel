@@ -68,7 +68,7 @@
                     <stat v-if="isNew"
                           icon="user-plus"
                         tooltip="new users">
-                        {{ statistics['new users'] | numberFormat(0) }}
+                        {{ statistics.newUsers | numberFormat(0) }}
                     </stat>
                     <stat icon="user-friends"
                         tooltip="active users">
