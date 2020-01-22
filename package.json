@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/enso-ui/control-panel#readme",
   "dependencies": {
+    "@enso-ui/ui": "2.3.x",
+    "@enso-ui/bulma": "2.2.x",
     "@enso-ui/card": "1.0.x",
     "@enso-ui/confirmation": "1.0.x",
     "@enso-ui/directives": "1.0.x",
@@ -29,8 +31,13 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.2",
     "@fortawesome/free-regular-svg-icons": "^5.2.0",
     "@fortawesome/free-solid-svg-icons": "^5.2.0",
+    "@fortawesome/free-brands-svg-icons": "^5.2.0",
+    "@fortawesome/pro-duotone-svg-icons": "^5.12.0",
+    "@fortawesome/pro-regular-svg-icons": "^5.10.1",
+    "@fortawesome/pro-solid-svg-icons": "^5.10.1",
     "v-tooltip": "^2.0.0-rc.32",
-    "vue": "^2.5.16"
+    "vue": "^2.5.16",
+    "vuex": "^3.0.0"
   },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",

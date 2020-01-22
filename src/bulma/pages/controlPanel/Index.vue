@@ -37,7 +37,7 @@
             <div v-for="(application, index) in applications"
                 :key="index"
                 class="
-                    column is-one-fifth-fullhd is-one-quarter-widescreen
+                    column is-one-third-fullhd is-one-quarter-widescreen
                     is-one-third-tablet is-half-mobile
                 ">
                 <application ref="apps"
@@ -71,7 +71,7 @@ export default {
                 logins: 0,
                 actions: 0,
                 users: 0,
-                sessions: 0
+                sessions: 0,
             },
         };
     },
@@ -93,7 +93,9 @@ export default {
         },
         updateStats() {
             Object.keys(this.general)
-                .forEach(key => this.general[key] = this.sum(key));
+                .forEach((key) => {
+                    this.general[key] = this.sum(key);
+                });
         },
 
         sum(attr) {

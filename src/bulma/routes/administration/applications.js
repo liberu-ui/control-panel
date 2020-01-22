@@ -1,4 +1,4 @@
-import routeImporter from '@core/modules/importers/routeImporter.js';
+import routeImporter from '@enso-ui/ui/src/modules/importers/routeImporter';
 
 const routes = routeImporter(require.context('./applications', false, /.*\.js$/));
 const RouterView = () => import('@core/bulma/pages/Router.vue');
