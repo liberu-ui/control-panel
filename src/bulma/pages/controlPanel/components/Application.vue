@@ -51,17 +51,17 @@
                      class="columns line">
                     <stat icon="database"
                           tooltip="mysql version">
-                        {{ statistics['mysql version'] }}
+                        {{ statistics.mysqlVersion }}
                     </stat>
                     <stat :icon="['fab', 'php']"
                           :due-tone="false"
                           tooltip="php version">
-                        {{ statistics['php version'] }}
+                        {{ statistics.phpVersion }}
                     </stat>
                     <stat :icon="['fab' ,'enso']"
                           :due-tone="false"
                           tooltip="version">
-                        {{ statistics['version'] }}
+                        {{ statistics.version }}
                     </stat>
                 </div>
                 <div class="columns line">
@@ -72,11 +72,11 @@
                     </stat>
                     <stat icon="user-friends"
                         tooltip="active users">
-                        {{ statistics['active users'] | numberFormat(0) }}
+                        {{ statistics.activeUsers | numberFormat(0) }}
                     </stat>
                     <stat icon="users"
                         tooltip="users">
-                        {{ statistics['users'] | numberFormat(0) }}
+                        {{ statistics.users | numberFormat(0) }}
                     </stat>
                 </div>
                 <div v-if="isNew"
@@ -86,67 +86,67 @@
                     </div>
                     <stat icon="hourglass-half"
                           tooltip="pending jobs">
-                        {{ statistics['jobs'] }}
+                        {{ statistics.jobs }}
                     </stat>
                     <stat icon="exclamation-circle"
                           tooltip="failed job">
-                        {{ statistics['failed jobs'] }}
+                        {{ statistics.failedJobs }}
                     </stat>
                 </div>
                 <div class="columns line">
                     <stat icon="sign-in-alt"
                         tooltip="number of login">
-                        {{ statistics['logins'] | numberFormat(0) }}
+                        {{ statistics.logins | numberFormat(0) }}
                     </stat>
                     <stat icon="link"
                           tooltip="number of sessions">
-                        {{ statistics['sessions'] | numberFormat(0) }}
+                        {{ statistics.sessions | numberFormat(0) }}
                     </stat>
                     <stat v-if="isNew"
                           icon="mouse-alt"
                           tooltip="number of sessions">
-                        {{ statistics['actions'] | numberFormat(0) }}
+                        {{ statistics.actions | numberFormat(0) }}
                     </stat>
                 </div>
                 <div v-if="repository"
                     class="columns line">
                     <stat icon="exclamation-circle"
                           tooltip="issues">
-                        {{ repository['project']['open_issues_count'] | numberFormat(0) }}
+                        {{ repository.project.open_issues_count | numberFormat(0) }}
                     </stat>
                     <stat icon="code-commit"
                         tooltip="last commit">
-                        {{ timeFromNow(repository['lastCommit']['committed_date']) }}
+                        {{ timeFromNow(repository.lastCommit.committed_date) }}
                     </stat>
                     <div class="column" v-tooltip="'pipeline: ' + repository['pipeline']['status']">
-                        <fa v-if="repository['pipeline']['status'] === 'running'"
+                        <fa v-if="repository.pipeline.status === 'running'"
                             :icon="['fad', 'play-circle']"
                             class="has-text-info has-margin-right-small"/>
-                        <fa v-else-if="repository['pipeline']['status'] === 'pending'"
+                        <fa v-else-if="repository.pipeline.status === 'pending'"
                             :icon="['fad', 'pause-circle']"
                             class="has-text-warning has-margin-right-small"/>
-                        <fa v-else-if="repository['pipeline']['status'] === 'success'"
+                        <fa v-else-if="repository.pipeline.status === 'success'"
                             :icon="['fad', 'check-circle']"
                             class="has-text-success has-margin-right-small"/>
-                        <fa v-else-if="repository['pipeline']['status'] === 'failed'"
+                        <fa v-else-if="repository.pipeline.status === 'failed'"
                             :icon="['fad', 'times-circle']"
                             class="has-text-danger has-margin-right-small"/>
                         <fa v-else
                             :icon="['fad', 'ban']"
                             class="has-margin-right-small"/>
-                        <span>{{ repository['pipeline']['status'] }}</span>
+                        <span>{{ repository.pipeline.status }}</span>
                     </div>
                 </div>
                 <div class="columns line">
                     <stat icon="clock"
                         tooltip="server time">
-                        {{ statistics['server time'] }}
+                        {{ statistics.serverTime }}
                     </stat>
                     <stat v-if="errors"
                         icon="bug"
                         tooltip="errors"
                         class="column is-8">
-                        {{ errors['events'] }}
+                        {{ errors.events }}
                     </stat>
                 </div>
             </div>
@@ -178,7 +178,7 @@
                 <a v-if="repository"
                    target="_blank"
                    class="is-naked has-margin-left-medium"
-                   :href="repository['project']['web_url']">
+                   :href="repository.project.web_url">
                     <span class="icon is-small is-clickable has-margin-top-small">
                         <fa :icon="['fab', 'gitlab']"
                             size="xs"/>
@@ -191,7 +191,7 @@
             <div class="card-footer-item has-padding-medium">
                 <a class="is-naked has-margin-left-medium loading"
                     target="_blank"
-                    :href="errors['webUrl']">
+                    :href="errors.webUrl">
                     <span class="icon is-small is-clickable has-margin-top-small">
                         <fa :icon="['fad', 'bug']"
                             size="xs"/>
@@ -202,7 +202,7 @@
             <div class="card-footer-item has-padding-medium">
                 <a class="is-naked has-margin-left-medium"
                    target="_blank"
-                   :href="application['url']">
+                   :href="application.url">
                     <span class="icon is-small is-clickable has-margin-top-small">
                         <fa :icon="['fab', 'enso']"
                             size="xs"/>
@@ -235,7 +235,7 @@
                         <span>{{ i18n('Log') }} </span>
                         <span v-if="application.type === Enso"
                             class="log-size">
-                            ({{ statistics['log size'] }} MB)
+                            ({{ statistics.logSize }} MB)
                         </span>
                     </a>
                 </confirmation>
