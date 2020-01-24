@@ -1,36 +1,10 @@
 <template>
     <div>
         <div class="columns">
-            <div class="column">
-                <div class="box has-text-centered has-padding-medium raises-on-hover">
-                    <button class="button is-small is-pulled-right is-naked"
-                        @click="refresh">
-                        <span class="icon is-small">
-                            <fa icon="sync"/>
-                        </span>
-                    </button>
-                    <strong>{{ i18n('Logins') }}: {{ format(general.logins) }}</strong>
-                </div>
-            </div>
-            <div class="column">
-                <div class="box has-text-centered has-padding-medium raises-on-hover">
-                    <strong>{{ i18n('Actions') }}: {{ format(general.actions) }}</strong>
-                </div>
-            </div>
-            <div class="column is-one-third">
+            <div class="column is-offset-one-third is-one-third">
                 <date-filter class="box raises-on-hover"
                     compact
                     @update="dates = $event"/>
-            </div>
-            <div class="column">
-                <div class="box has-text-centered has-padding-medium raises-on-hover is-rounded">
-                    <strong>{{ i18n('Users') }}: {{ format(general.users) }}</strong>
-                </div>
-            </div>
-            <div class="column">
-                <div class="box has-text-centered has-padding-medium raises-on-hover is-rounded">
-                    <strong>{{ i18n('Sessions') }}: {{ format(general.sessions) }}</strong>
-                </div>
             </div>
         </div>
         <div class="columns is-multiline is-mobile">

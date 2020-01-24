@@ -12,235 +12,56 @@
                         <fa icon="info-circle"/>
                     </span>
                 </card-control>
-                <card-refresh @refresh="fetch"/>
+                <card-refresh @refresh="loadStatistics"/>
                 <card-collapse/>
             </template>
         </card-header>
         <card-content v-if="statistics"
             class="is-paddingless">
             <div class="applications is-fullwidth is-marginless is-hoverable">
-                <div class="columns line">
-                    <tag-stat :success="statistics.status === 'up'">
-                        Http
-                    </tag-stat>
-                    <tag-stat v-if="isNew"
-                        :success="statistics.schedule">
-                        Schedule
-                    </tag-stat>
-                    <tag-stat v-if="isNew"
-                        :success="statistics.horizon === 'running'">
-                        Horizon
-                    </tag-stat>
-                </div>
-                <div v-if="isNew"
-                     class="columns line">
-                    <stat icon="microchip"
-                        tooltip="cpu usage">
-                        {{ statistics.load }} %
-                    </stat>
-                    <stat icon="memory"
-                        tooltip="memory usage">
-                        {{ statistics.memory }} {{ statistics.memory === '-' ? '' : '%' }}
-                    </stat>
-                    <stat icon="hdd"
-                        tooltip="free disk space">
-                        {{ statistics.disk }} GB
-                    </stat>
-                </div>
-                <div v-if="isNew"
-                     class="columns line">
-                    <stat icon="database"
-                          tooltip="mysql version">
-                        {{ statistics.mysqlVersion }}
-                    </stat>
-                    <stat :icon="['fab', 'php']"
-                          :due-tone="false"
-                          tooltip="php version">
-                        {{ statistics.phpVersion }}
-                    </stat>
-                    <stat :icon="['fab' ,'enso']"
-                          :due-tone="false"
-                          tooltip="version">
-                        {{ statistics.version }}
-                    </stat>
-                </div>
-                <div class="columns line">
-                    <stat v-if="isNew"
-                          icon="user-plus"
-                        tooltip="new users">
-                        {{ statistics.newUsers | numberFormat(0) }}
-                    </stat>
-                    <stat icon="user-friends"
-                        tooltip="active users">
-                        {{ statistics.activeUsers | numberFormat(0) }}
-                    </stat>
-                    <stat icon="users"
-                        tooltip="users">
-                        {{ statistics.users | numberFormat(0) }}
-                    </stat>
-                </div>
-                <div v-if="isNew"
-                     class="columns line">
-                    <div class="column">
-                        <span>Jobs</span>
-                    </div>
-                    <stat icon="hourglass-half"
-                          tooltip="pending jobs">
-                        {{ statistics.jobs }}
-                    </stat>
-                    <stat icon="exclamation-circle"
-                          tooltip="failed job">
-                        {{ statistics.failedJobs }}
-                    </stat>
-                </div>
-                <div class="columns line">
-                    <stat icon="sign-in-alt"
-                        tooltip="number of login">
-                        {{ statistics.logins | numberFormat(0) }}
-                    </stat>
-                    <stat icon="link"
-                          tooltip="number of sessions">
-                        {{ statistics.sessions | numberFormat(0) }}
-                    </stat>
-                    <stat v-if="isNew"
-                          icon="mouse-alt"
-                          tooltip="number of sessions">
-                        {{ statistics.actions | numberFormat(0) }}
-                    </stat>
-                </div>
-                <div v-if="repository"
-                    class="columns line">
-                    <stat icon="exclamation-circle"
-                          tooltip="issues">
-                        {{ repository.project.open_issues_count | numberFormat(0) }}
-                    </stat>
-                    <stat icon="code-commit"
-                        tooltip="last commit">
-                        {{ timeFromNow(repository.lastCommit.committed_date) }}
-                    </stat>
-                    <div class="column" v-tooltip="'pipeline: ' + repository['pipeline']['status']">
-                        <fa v-if="repository.pipeline.status === 'running'"
-                            :icon="['fad', 'play-circle']"
-                            class="has-text-info has-margin-right-small"/>
-                        <fa v-else-if="repository.pipeline.status === 'pending'"
-                            :icon="['fad', 'pause-circle']"
-                            class="has-text-warning has-margin-right-small"/>
-                        <fa v-else-if="repository.pipeline.status === 'success'"
-                            :icon="['fad', 'check-circle']"
-                            class="has-text-success has-margin-right-small"/>
-                        <fa v-else-if="repository.pipeline.status === 'failed'"
-                            :icon="['fad', 'times-circle']"
-                            class="has-text-danger has-margin-right-small"/>
-                        <fa v-else
-                            :icon="['fad', 'ban']"
-                            class="has-margin-right-small"/>
-                        <span>{{ repository.pipeline.status }}</span>
-                    </div>
-                </div>
-                <div class="columns line">
-                    <stat icon="clock"
-                        tooltip="server time">
-                        {{ statistics.serverTime }}
-                    </stat>
-                    <stat v-if="errors"
-                        icon="bug"
-                        tooltip="errors"
-                        class="column is-8">
-                        {{ errors.events }}
-                    </stat>
-                </div>
+                <stats v-for="(stats, group) in statistics"
+                    :key="group"
+                    :label="group">
+                    <stat v-for="(stat, index) in stats"
+                        :stat="stat"
+                        :key="index"/>
+                </stats>
             </div>
         </card-content>
         <card-footer>
-            <div class="card-footer-item has-padding-medium">
-                <a class="is-naked has-margin-left-medium"
-                    target="_blank"
-                    :href="application.forge">
-                    <span class="icon is-small is-clickable has-margin-top-small">
-                        <fa :icon="['fad', 'server']"
-                            size="xs"/>
-                    </span>
-                    <span>{{ i18n('Forge') }}</span>
-                </a>
-            </div>
-            <div class="card-footer-item has-padding-medium">
-                <a class="is-naked has-margin-left-medium"
-                   target="_blank"
-                   :href="application.envoyer">
-                    <span class="icon is-small is-clickable has-margin-top-small">
-                        <fa :icon="['fad', 'rocket']"
-                            size="xs"/>
-                    </span>
-                    <span>{{ i18n('Envoyer') }}</span>
-                </a>
-            </div>
-            <div class="card-footer-item has-padding-medium">
-                <a v-if="repository"
-                   target="_blank"
-                   class="is-naked has-margin-left-medium"
-                   :href="repository.project.web_url">
-                    <span class="icon is-small is-clickable has-margin-top-small">
-                        <fa :icon="['fab', 'gitlab']"
-                            size="xs"/>
-                    </span>
-                    <span>{{ i18n('Gitlab') }}</span>
-                </a>
-            </div>
+            <footer-link :href="application.forge"
+                icon="server">
+                {{ i18n('Forge') }}
+            </footer-link>
+            <footer-link :href="application.envoyer"
+                icon="rocket">
+                {{ i18n('Envoyer') }}
+            </footer-link>
+            <footer-link :href="gitlabUrl"
+                :icon="['fab', 'gitlab']">
+                {{ i18n('Gitlab') }}
+            </footer-link>
         </card-footer>
         <card-footer>
-            <div class="card-footer-item has-padding-medium">
-                <a class="is-naked has-margin-left-medium loading"
-                    target="_blank"
-                    :href="errors.webUrl">
-                    <span class="icon is-small is-clickable has-margin-top-small">
-                        <fa :icon="['fad', 'bug']"
-                            size="xs"/>
-                    </span>
-                    <span>{{ i18n('Sentry') }}</span>
-                </a>
-            </div>
-            <div class="card-footer-item has-padding-medium">
-                <a class="is-naked has-margin-left-medium"
-                   target="_blank"
-                   :href="application.url">
-                    <span class="icon is-small is-clickable has-margin-top-small">
-                        <fa :icon="['fab', 'enso']"
-                            size="xs"/>
-                    </span>
-                    <span>{{ i18n('Site') }}</span>
-                </a>
-            </div>
+            <footer-link :href="sentryUrl"
+                icon="bug">
+                {{ i18n('Sentry') }}
+            </footer-link>
+            <footer-link :href="application.url"
+                :icon="['fab', 'enso']">
+                {{ i18n('Site') }}
+            </footer-link>
         </card-footer>
-        <card-footer>
-            <div class="card-footer-item has-padding-medium">
-                <confirmation placement="bottom"
-                    @confirm="maintenance()">
-                    <a class="is-naked has-margin-left-medium">
-                        <span class="icon is-small is-clickable has-margin-top-small">
-                            <fa icon="power-off"
-                                size="xs"/>
-                        </span>
-                        <span>{{ i18n('App') }}</span>
-                    </a>
-                </confirmation>
+        <footer class="card-footer columns has-text-centered is-multiline is-marginless">
+            <div class="has-padding-medium column is-4 action-item"
+                 :key="key"
+                 v-for="(action, key) in actions">
+                <confirm-action :action-key="key"
+                    :action="action"
+                    :application="application"
+                    @action="loadStatistics()"/>
             </div>
-            <div class="card-footer-item has-padding-medium">
-                <confirmation placement="bottom"
-                    @confirm="clearLog()">
-                    <a class="is-naked has-margin-left-medium">
-                        <span class="icon is-small is-clickable has-margin-top-small">
-                            <fa :icon="['fad', 'trash-alt']"
-                                size="xs"/>
-                        </span>
-                        <span>{{ i18n('Log') }} </span>
-                        <span v-if="application.type === Enso"
-                            class="log-size">
-                            ({{ statistics.logSize }} MB)
-                        </span>
-                    </a>
-                </confirmation>
-            </div>
-        </card-footer>
+        </footer>
     </card>
 </template>
 
@@ -254,17 +75,18 @@ import {
     faHdd, faCubes, faHourglassHalf, faExclamationCircle,
     faRocket, faSignInAlt, faLink, faTimesCircle, faCheckCircle,
     faBan, faPlayCircle, faPauseCircle, faCodeCommit, faMouseAlt,
-    faGlobeEurope, faBug, faClock,
+    faGlobeEurope, faBug, faClock, faStream, faTerminal, faFileContract,
+    faDownload,
 } from '@fortawesome/pro-duotone-svg-icons';
 import { VTooltip } from 'v-tooltip';
 import {
     Card, CardCollapse, CardContent, CardControl,
     CardHeader, CardFooter, CardRefresh,
 } from '@enso-ui/card/bulma';
-import Confirmation from '@enso-ui/confirmation/bulma';
-import formatDistance from '@enso-ui/ui/src/modules/plugins/date-fns/formatDistance';
 import Stat from './Stat.vue';
-import TagStat from './TagStat.vue';
+import Stats from './Stats.vue';
+import FooterLink from './FooterLink.vue';
+import ConfirmAction from './ConfirmAction.vue';
 import faEnso from './icons/faEnso';
 
 library.add(
@@ -274,7 +96,8 @@ library.add(
     faUsers, faUserFriends, faGitlab, faCodeCommit, faServer,
     faRocket, faSignInAlt, faMouseAlt, faLink, faTimesCircle,
     faCheckCircle, faBan, faPlayCircle, faPauseCircle, faGlobeEurope,
-    faServer, faEnso, faBug, faClock,
+    faServer, faEnso, faBug, faClock, faStream, faTerminal, faFileContract,
+    faDownload,
 );
 
 export default {
@@ -283,6 +106,7 @@ export default {
     directives: { tooltip: VTooltip },
 
     components: {
+        ConfirmAction,
         Card,
         CardHeader,
         CardControl,
@@ -290,9 +114,9 @@ export default {
         CardCollapse,
         CardContent,
         CardFooter,
-        Confirmation,
         Stat,
-        TagStat,
+        Stats,
+        FooterLink,
     },
 
     inject: ['i18n', 'errorHandler', 'route'],
@@ -311,9 +135,10 @@ export default {
     data: () => ({
         loading: false,
         statistics: {},
-        repository: null,
+        actions: {},
+        gitlabUrl: null,
+        sentryUrl: null,
         errors: {},
-        Enso: 2,
     }),
 
     computed: {
@@ -325,35 +150,50 @@ export default {
                 type: this.application.type,
             };
         },
-        isNew() {
-            return `${this.application.type}` === this.enums.applicationTypes.Enso;
-        },
     },
 
     watch: {
-        dates: 'fetch',
+        dates: 'loadStatistics',
     },
 
     created() {
-        this.fetch();
+        this.loadStatistics();
     },
-
 
     methods: {
         request(request) {
             this.loading = true;
+
             request().then(() => {
                 this.loading = false;
             }).catch(this.errorHandler);
         },
-        fetch() {
+        loadStatistics() {
             const request = () => axios.post(
                 this.route('controlPanel.statistics', this.application.id),
                 this.params,
             ).then(({ data }) => {
-                this.statistics = data;
+                this.statistics = {
+                    ...this.statistics,
+                    ...data,
+                };
                 this.$emit('loaded');
-                this.$forceUpdate();
+            }).then(() => {
+                if (`${this.application.type}` === this.enums.applicationTypes.Enso) {
+                    return this.loadActions();
+                }
+
+                return this.gitlab();
+            });
+
+            this.request(request);
+        },
+        loadActions() {
+            const request = () => axios.post(
+                this.route('controlPanel.actions', this.application.id),
+                this.params,
+            ).then(({ data }) => {
+                this.actions = data;
             }).then(() => this.gitlab());
 
             this.request(request);
@@ -363,7 +203,12 @@ export default {
                 this.route('controlPanel.gitlab', this.application.id),
                 this.params,
             ).then(({ data }) => {
-                this.repository = data;
+                this.statistics = {
+                    ...this.statistics,
+                    ...data.statistics,
+                };
+
+                this.gitlabUrl = data.url;
             }).then(() => this.sentry());
 
             this.request(request);
@@ -373,29 +218,15 @@ export default {
                 this.route('controlPanel.sentry', this.application.id),
                 this.params,
             ).then(({ data }) => {
-                this.errors = data;
+                this.statistics = {
+                    ...this.statistics,
+                    ...data.statistics,
+                };
+
+                this.sentryUrl = data.url;
             });
 
             this.request(request);
-        },
-        maintenance() {
-            const request = () => axios.post(this.route('controlPanel.maintenance', this.application.id))
-                .then(({ data }) => {
-                    this.statistics.status = data.status;
-                });
-
-            this.request(request);
-        },
-        clearLog() {
-            const request = () => axios.post(this.route('controlPanel.clearLog', this.application.id))
-                .then(({ data }) => {
-                    this.statistics.logSize = data.logSize;
-                });
-
-            this.request(request);
-        },
-        timeFromNow(date) {
-            return formatDistance(date);
         },
     },
 };
@@ -404,30 +235,30 @@ export default {
 <style lang="scss">
     .applications {
         font-size: 0.9rem;
-        padding-top:10px;
+        padding-top: 30px;
         padding-bottom: 10px;
-
-        .tag {
-            font-size: 0.8rem;
-            font-weight: bold;
-            height: 1.4em;
-        }
-
-        .line {
-            position: relative;
-            font-weight: bold;
-            text-align: left;
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-        .line:not(:last-child) {
-            border-bottom: 1px solid #dbdbdb;
-        }
     }
 
-    .log-size {
-        font-size: 0.9rem;
-        font-weight: bold;
+    .action-item:not(:nth-child(3n)) {
+        border-right: 1px solid #ededed;
+    }
+
+    .action-item {
+        border-bottom: 1px solid #ededed;
+        margin: auto !important;
+    }
+
+    .action-item:nth-child(3n + 1):nth-last-child(-n+3)
+    {
+        border-bottom: none;
+    }
+
+    .action-item:nth-child(3n + 2):nth-last-child(-n + 2)
+    {
+        border-bottom: none;
+    }
+
+    .action-item:nth-child(3n):nth-last-child(1) {
+        border-bottom: none;
     }
 </style>
