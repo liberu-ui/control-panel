@@ -54,8 +54,8 @@
         </card-footer>
         <footer class="card-footer columns has-text-centered is-multiline is-marginless">
             <div class="has-padding-medium column is-4 action-item"
-                 :key="key"
-                 v-for="(action, key) in actions">
+                :key="key"
+                v-for="(action, key) in actions">
                 <confirm-action :action-key="key"
                     :action="action"
                     :application="application"

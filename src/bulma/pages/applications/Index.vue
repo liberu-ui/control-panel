@@ -1,9 +1,7 @@
 <template>
     <enso-table class="box is-paddingless raises-on-hover"
         id="applications"
-        @panel="$router.push({
-            name: 'controlPanel.index'
-        })"/>
+        @panel="$router.push({ name: 'controlPanel.index' })"/>
 </template>
 
 <script>
