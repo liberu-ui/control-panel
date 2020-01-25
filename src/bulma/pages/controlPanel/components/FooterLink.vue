@@ -3,12 +3,12 @@
         <a class="is-naked has-margin-left-medium"
             target="_blank"
             :href="href"
-            v-if="href">
+            v-if="label">
             <span class="icon is-small is-clickable has-margin-top-small">
-                <fa :icon="! Array.isArray(icon) ? ['fad', icon] : icon"
+                <fa :icon="icon"
                     size="xs"/>
             </span>
-            <span> <slot/> </span>
+            <span>{{ label }}</span>
         </a>
         <div v-else
             class="loader"/>
@@ -30,7 +30,11 @@ export default {
         },
         href: {
             type: String,
-            default: null,
+            required: true,
+        },
+        label: {
+            type: String,
+            required: true,
         },
     },
 };

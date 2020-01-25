@@ -1,29 +1,38 @@
 <template>
     <div class="columns is-multiline line">
-        <div v-if="label"
-            class="line-label">
-            {{ i18n(label) }}
+        <div class="line-group">
+            {{ i18n(group) }}
         </div>
-        <slot/>
+        <stat v-for="(stat, index) in stats"
+            :stat="stat"
+            :key="JSON.stringify(stat.icon) + index"/>
     </div>
 </template>
 
 <script>
+import Stat from './Stat.vue';
+
 export default {
     name: 'Stats',
 
     inject: ['i18n'],
 
+    components: { Stat },
+
     props: {
-        label: {
+        group: {
             type: String,
-            default: null,
+            required: true,
+        },
+        stats: {
+            type: Array,
+            required: true,
         },
     },
 };
-
 </script>
-<style scoped>
+
+<style lang="scss">
     .line {
         position: relative;
         font-weight: bold;
@@ -37,7 +46,7 @@ export default {
         border-top: 1px solid #dbdbdb;
     }
 
-    .line-label {
+    .line-group {
         position: absolute;
         top: -11px;
         left: 5px;

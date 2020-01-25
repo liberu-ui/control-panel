@@ -2,7 +2,7 @@
     <div class="column is-4"
         :class="stat.class">
         <fa v-if="stat.icon"
-            :icon="! Array.isArray(stat.icon) ? ['fad', stat.icon] : stat.icon"
+            :icon="stat.icon"
             class="has-margin-right-small"
             v-tooltip="i18n(stat.tooltip)"/>
         <span>{{ stat.value }}</span>
@@ -26,5 +26,4 @@ export default {
         },
     },
 };
-
 </script>

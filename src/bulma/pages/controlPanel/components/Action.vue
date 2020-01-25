@@ -1,9 +1,9 @@
 <template>
     <a class="is-naked has-margin-left-medium action"
        v-on="$listeners"
-       :v-tooltip="action.description">
+       v-tooltip="action.description">
             <span class="icon is-small is-clickable has-margin-top-small">
-                <fa :icon="! Array.isArray(action.icon) ? ['fad', action.icon] : action.icon"
+                <fa :icon="action.icon"
                     size="xs"/>
             </span>
         <span>{{ action.label }}</span>

@@ -1,5 +1,6 @@
 <template>
-    <card collapsible
+    <card class="is-rounded"
+        collapsible
         :loading="loading">
         <card-header class="has-background-light">
             <template v-slot:title>
@@ -21,35 +22,40 @@
             <div class="applications is-fullwidth is-marginless is-hoverable">
                 <stats v-for="(stats, group) in statistics"
                     :key="group"
-                    :label="group">
-                    <stat v-for="(stat, index) in stats"
-                        :stat="stat"
-                        :key="index"/>
+                    :group="group"
+                    :stats="stats">
                 </stats>
             </div>
         </card-content>
         <card-footer>
-            <footer-link :href="application.forge"
-                icon="server">
-                {{ i18n('Forge') }}
+            <!-- use camelCase after adding an application resource in BE -->
+            <!-- after adding the be resource we should render footer-link dynamically. We can have an empty tab (the two lines can be equal) -->
+            <footer-link :href="application.forge_url"
+                :icon="['fad', 'server']"
+                :label="i18n('Forge')"
+                v-if="application.forge_url">
             </footer-link>
-            <footer-link :href="application.envoyer"
-                icon="rocket">
-                {{ i18n('Envoyer') }}
+            <footer-link :href="application.envoyer_url"
+                :icon="['fad', 'rocket']"
+                :label="i18n('Envoyer')"
+                v-if="application.envoyer_url">
             </footer-link>
             <footer-link :href="gitlabUrl"
-                :icon="['fab', 'gitlab']">
-                {{ i18n('Gitlab') }}
+                :icon="['fab', 'gitlab']"
+                :label="i18n('Gitlab')"
+                v-if="gitlabUrl">
             </footer-link>
         </card-footer>
         <card-footer>
             <footer-link :href="sentryUrl"
-                icon="bug">
-                {{ i18n('Sentry') }}
+                :icon="['fad', 'bug']"
+                :label="i18n('Sentry')"
+                v-if="sentryUrl">
             </footer-link>
             <footer-link :href="application.url"
-                :icon="['fab', 'enso']">
-                {{ i18n('Site') }}
+                :icon="['fab', 'enso']"
+                :label="i18n('Site')"
+                v-if="application.url">
             </footer-link>
         </card-footer>
         <footer class="card-footer columns has-text-centered is-multiline is-marginless">
@@ -83,7 +89,6 @@ import {
     Card, CardCollapse, CardContent, CardControl,
     CardHeader, CardFooter, CardRefresh,
 } from '@enso-ui/card/bulma';
-import Stat from './Stat.vue';
 import Stats from './Stats.vue';
 import FooterLink from './FooterLink.vue';
 import ConfirmAction from './ConfirmAction.vue';
@@ -114,7 +119,6 @@ export default {
         CardCollapse,
         CardContent,
         CardFooter,
-        Stat,
         Stats,
         FooterLink,
     },
@@ -183,7 +187,7 @@ export default {
                     return this.loadActions();
                 }
 
-                return this.gitlab();
+                this.gitlab();
             });
 
             this.request(request);
@@ -209,7 +213,9 @@ export default {
                 };
 
                 this.gitlabUrl = data.url;
-            }).then(() => this.sentry());
+            })
+            // .then(() => this.sentry())
+            ;
 
             this.request(request);
         },
