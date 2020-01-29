@@ -2,13 +2,16 @@
     <div class="card-footer-item has-padding-medium">
         <a class="is-naked has-margin-left-medium"
             target="_blank"
-            :href="href"
-            v-if="label">
-            <span class="icon is-small is-clickable has-margin-top-small">
-                <fa :icon="icon"
-                    size="xs"/>
-            </span>
-            <span>{{ label }}</span>
+            :href="link.url"
+            v-if="link.label">
+            <desc-tooltip :tooltip="link.tooltip"
+                :description="link.description">
+                <span class="icon is-small is-clickable has-margin-top-small">
+                    <fa :icon="link.icon"
+                        size="xs"/>
+                </span>
+            </desc-tooltip>
+            <span>{{ link.label }}</span>
         </a>
         <div v-else
             class="loader"/>
@@ -16,24 +19,16 @@
 </template>
 
 <script>
-import { VTooltip } from 'v-tooltip';
+import DescTooltip from './DescTooltip.vue';
 
 export default {
     name: 'FooterLink',
 
-    directives: { tooltip: VTooltip },
+    components: { DescTooltip },
 
     props: {
-        icon: {
-            type: [String, Array],
-            required: true,
-        },
-        href: {
-            type: String,
-            required: true,
-        },
-        label: {
-            type: String,
+        link: {
+            type: Object,
             required: true,
         },
     },
