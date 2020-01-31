@@ -1,11 +1,11 @@
 <template>
     <div class="columns is-multiline line">
         <div class="line-group">
-            {{ i18n(group) }}
+            {{ i18n(group.label) }}
         </div>
-        <stat v-for="(stat, index) in stats"
+        <stat v-for="stat in order(group.statistics)"
             :stat="stat"
-            :key="JSON.stringify(stat.icon) + index"/>
+            :key="stat.id"/>
     </div>
 </template>
 
@@ -21,12 +21,13 @@ export default {
 
     props: {
         group: {
-            type: String,
+            type: Object,
             required: true,
         },
-        stats: {
-            type: Array,
-            required: true,
+    },
+    methods: {
+        order(items) {
+            return [...items].sort((i1, i2) => i1.order - i2.order);
         },
     },
 };

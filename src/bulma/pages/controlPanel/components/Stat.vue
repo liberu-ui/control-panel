@@ -1,23 +1,25 @@
 <template>
     <div class="column is-4"
         :class="stat.class">
-        <fa v-if="stat.icon"
-            :icon="stat.icon"
-            class="has-margin-right-small"
-            v-tooltip="i18n(stat.tooltip)"/>
+        <desc-tooltip :tooltip="stat.tooltip"
+            :description="stat.description">
+            <fa v-if="stat.icon"
+                :icon="stat.icon"
+                class="has-margin-right-medium"/>
+        </desc-tooltip>
         <span>{{ stat.value }}</span>
     </div>
 </template>
 
 <script>
-import { VTooltip } from 'v-tooltip';
+import DescTooltip from './DescTooltip.vue';
 
 export default {
     name: 'Stat',
 
     inject: ['route', 'i18n'],
 
-    directives: { tooltip: VTooltip },
+    components: { DescTooltip },
 
     props: {
         stat: {
@@ -25,5 +27,18 @@ export default {
             default: null,
         },
     },
+    data() {
+        return {
+            desc: false,
+        };
+    },
 };
 </script>
+<style type="scss">
+    .v-popover {
+        display: inline-block;
+    }
+    .show-more {
+        font-size: 0.6em;
+    }
+</style>

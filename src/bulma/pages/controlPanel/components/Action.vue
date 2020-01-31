@@ -1,32 +1,30 @@
 <template>
     <a class="is-naked has-margin-left-medium action"
-       v-on="$listeners"
-       v-tooltip="action.description">
+       v-on="$listeners">
+        <desc-tooltip :tooltip="action.tooltip"
+            :description="action.description">
             <span class="icon is-small is-clickable has-margin-top-small">
                 <fa :icon="action.icon"
                     size="xs"/>
             </span>
+        </desc-tooltip>
         <span>{{ action.label }}</span>
     </a>
 </template>
 
 <script>
-import { VTooltip } from 'v-tooltip';
+import DescTooltip from './DescTooltip.vue';
 
 export default {
     name: 'Action',
 
     inject: ['route', 'i18n'],
 
-    directives: { tooltip: VTooltip },
+    components: { DescTooltip },
 
     props: {
         action: {
             type: Object,
-            required: true,
-        },
-        actionKey: {
-            type: String,
             required: true,
         },
         application: {
@@ -39,7 +37,7 @@ export default {
         doAction() {
             const route = this.route('controlPanel.action', {
                 application: this.application.id,
-                action: this.actionKey,
+                action: this.action.id,
             });
 
             axios.post(route).then(({ data }) => {

@@ -13,59 +13,33 @@
                         <fa icon="info-circle"/>
                     </span>
                 </card-control>
-                <card-refresh @refresh="loadStatistics"/>
+                <card-refresh @refresh="refresh()"/>
                 <card-collapse/>
             </template>
         </card-header>
         <card-content v-if="statistics"
             class="is-paddingless">
             <div class="applications is-fullwidth is-marginless is-hoverable">
-                <stats v-for="(stats, group) in statistics"
-                    :key="group"
-                    :group="group"
-                    :stats="stats">
-                </stats>
+                <stats v-for="group in order(statistics)"
+                    :key="group.id"
+                    :group="group"/>
             </div>
         </card-content>
-        <card-footer>
-            <!-- use camelCase after adding an application resource in BE -->
-            <!-- after adding the be resource we should render footer-link dynamically. We can have an empty tab (the two lines can be equal) -->
-            <footer-link :href="application.forge_url"
-                :icon="['fad', 'server']"
-                :label="i18n('Forge')"
-                v-if="application.forge_url">
-            </footer-link>
-            <footer-link :href="application.envoyer_url"
-                :icon="['fad', 'rocket']"
-                :label="i18n('Envoyer')"
-                v-if="application.envoyer_url">
-            </footer-link>
-            <footer-link :href="gitlabUrl"
-                :icon="['fab', 'gitlab']"
-                :label="i18n('Gitlab')"
-                v-if="gitlabUrl">
-            </footer-link>
-        </card-footer>
-        <card-footer>
-            <footer-link :href="sentryUrl"
-                :icon="['fad', 'bug']"
-                :label="i18n('Sentry')"
-                v-if="sentryUrl">
-            </footer-link>
-            <footer-link :href="application.url"
-                :icon="['fab', 'enso']"
-                :label="i18n('Site')"
-                v-if="application.url">
-            </footer-link>
-        </card-footer>
         <footer class="card-footer columns has-text-centered is-multiline is-marginless">
             <div class="has-padding-medium column is-4 action-item"
-                :key="key"
-                v-for="(action, key) in actions">
-                <confirm-action :action-key="key"
-                    :action="action"
+                 :key="link.id"
+                 v-for="link in order(links)">
+                <footer-link :key="link.id"
+                    :link="link"/>
+            </div>
+        </footer>
+        <footer class="card-footer columns has-text-centered is-multiline is-marginless">
+            <div class="has-padding-medium column is-4 action-item"
+                :key="action.id"
+                v-for="action in order(actions)">
+                <confirm-action :action="action"
                     :application="application"
-                    @action="loadStatistics()"/>
+                    @action="refresh()"/>
             </div>
         </footer>
     </card>
@@ -74,20 +48,19 @@
 <script>
 import { mapState } from 'vuex';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPhp, faGitlab } from '@fortawesome/free-brands-svg-icons';
+import { faGitlab, faPhp } from '@fortawesome/free-brands-svg-icons';
 import {
-    faServer, faDatabase, faUserPlus, faUserFriends, faUsers,
-    faInfoCircle, faPowerOff, faTrashAlt, faMemory, faMicrochip,
-    faHdd, faCubes, faHourglassHalf, faExclamationCircle,
-    faRocket, faSignInAlt, faLink, faTimesCircle, faCheckCircle,
-    faBan, faPlayCircle, faPauseCircle, faCodeCommit, faMouseAlt,
-    faGlobeEurope, faBug, faClock, faStream, faTerminal, faFileContract,
-    faDownload,
+    faBan, faBug, faCheckCircle, faClock, faCodeCommit,
+    faCubes, faDatabase, faDownload, faExclamationCircle,
+    faFileContract, faGlobeEurope, faHdd, faHourglassHalf,
+    faInfoCircle, faLink, faMemory, faMicrochip, faMouseAlt,
+    faPauseCircle, faPlayCircle, faPowerOff, faRocket, faServer,
+    faSignInAlt, faStopwatch, faStream, faTerminal, faTimesCircle,
+    faTrashAlt, faUserFriends, faUserPlus, faUsers,
 } from '@fortawesome/pro-duotone-svg-icons';
 import { VTooltip } from 'v-tooltip';
 import {
-    Card, CardCollapse, CardContent, CardControl,
-    CardHeader, CardFooter, CardRefresh,
+    Card, CardCollapse, CardContent, CardControl, CardHeader, CardRefresh,
 } from '@enso-ui/card/bulma';
 import Stats from './Stats.vue';
 import FooterLink from './FooterLink.vue';
@@ -102,7 +75,7 @@ library.add(
     faRocket, faSignInAlt, faMouseAlt, faLink, faTimesCircle,
     faCheckCircle, faBan, faPlayCircle, faPauseCircle, faGlobeEurope,
     faServer, faEnso, faBug, faClock, faStream, faTerminal, faFileContract,
-    faDownload,
+    faDownload, faStopwatch,
 );
 
 export default {
@@ -118,7 +91,6 @@ export default {
         CardRefresh,
         CardCollapse,
         CardContent,
-        CardFooter,
         Stats,
         FooterLink,
     },
@@ -138,26 +110,24 @@ export default {
 
     data: () => ({
         loading: false,
-        statistics: {},
-        actions: {},
-        gitlabUrl: null,
-        sentryUrl: null,
-        errors: {},
+        statistics: [],
+        dynamicLinks: [],
+        actions: [],
+        ongoingRequest: null,
     }),
 
     computed: {
         ...mapState(['enums']),
-        params() {
-            return {
-                startDate: this.dates.min,
-                endDate: this.dates.max,
-                type: this.application.type,
-            };
+        links() {
+            return [
+                ...this.application.links,
+                ...this.dynamicLinks,
+            ];
         },
     },
 
     watch: {
-        dates: 'loadStatistics',
+        dates: 'refresh',
     },
 
     created() {
@@ -166,73 +136,80 @@ export default {
 
     methods: {
         request(request) {
+            this.ongoingRequest = axios.CancelToken.source();
             this.loading = true;
 
-            request().then(() => {
+            request(this.ongoingRequest.token).then(() => {
                 this.loading = false;
             }).catch(this.errorHandler);
         },
         loadStatistics() {
-            const request = () => axios.post(
-                this.route('controlPanel.statistics', this.application.id),
-                this.params,
-            ).then(({ data }) => {
-                this.statistics = {
-                    ...this.statistics,
-                    ...data,
-                };
-                this.$emit('loaded');
-            }).then(() => {
-                if (`${this.application.type}` === this.enums.applicationTypes.Enso) {
-                    return this.loadActions();
-                }
+            const request = cancelToken => this.call('controlPanel.statistics', cancelToken)
+                .then(({ data }) => {
+                    this.statistics = [
+                        ...this.statistics,
+                        ...data,
+                    ];
 
-                this.gitlab();
-            });
+                    this.$emit('loaded');
+                }).then(() => (`${this.application.type}` === this.enums.applicationTypes.Enso
+                    ? this.loadActions()
+                    : this.gitlab()));
 
             this.request(request);
         },
         loadActions() {
-            const request = () => axios.post(
-                this.route('controlPanel.actions', this.application.id),
-                this.params,
-            ).then(({ data }) => {
-                this.actions = data;
-            }).then(() => this.gitlab());
+            const request = cancelToken => this.call('controlPanel.actions', cancelToken)
+                .then(({ data }) => {
+                    this.actions = data;
+                }).then(() => this.gitlab());
 
             this.request(request);
         },
         gitlab() {
-            const request = () => axios.post(
-                this.route('controlPanel.gitlab', this.application.id),
-                this.params,
-            ).then(({ data }) => {
-                this.statistics = {
-                    ...this.statistics,
-                    ...data.statistics,
-                };
-
-                this.gitlabUrl = data.url;
-            })
-            // .then(() => this.sentry())
-            ;
+            const request = cancelToken => this.call('controlPanel.gitlab', cancelToken)
+                .then(({ data }) => this.append(data)).then(() => this.sentry());
 
             this.request(request);
         },
         sentry() {
-            const request = () => axios.post(
-                this.route('controlPanel.sentry', this.application.id),
-                this.params,
-            ).then(({ data }) => {
-                this.statistics = {
-                    ...this.statistics,
-                    ...data.statistics,
-                };
-
-                this.sentryUrl = data.url;
-            });
+            const request = cancelToken => this.call('controlPanel.sentry', cancelToken)
+                .then(({ data }) => this.append(data));
 
             this.request(request);
+        },
+        append(data) {
+            this.statistics = [
+                ...this.statistics,
+                ...data.statistics,
+            ];
+            this.dynamicLinks = [
+                ...this.dynamicLinks,
+                ...data.links,
+            ];
+        },
+        refresh() {
+            if (this.ongoingRequest) {
+                this.ongoingRequest.cancel();
+            }
+
+            this.dynamicLinks = [];
+            this.statistics = [];
+            this.loadStatistics();
+        },
+        order(items) {
+            return [...items].sort((i1, i2) => i1.order - i2.order);
+        },
+        call(route, cancelToken) {
+            return axios.post(
+                this.route(route, this.application.id),
+                {
+                    startDate: this.dates.min,
+                    endDate: this.dates.max,
+                    type: this.application.type,
+                },
+                { cancelToken },
+            );
         },
     },
 };
@@ -251,7 +228,6 @@ export default {
 
     .action-item {
         border-bottom: 1px solid #ededed;
-        margin: auto !important;
     }
 
     .action-item:nth-child(3n + 1):nth-last-child(-n+3)
