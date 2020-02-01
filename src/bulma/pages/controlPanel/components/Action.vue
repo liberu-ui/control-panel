@@ -1,59 +1,58 @@
 <template>
-    <a class="is-naked has-margin-left-medium action"
-       v-on="$listeners">
-        <desc-tooltip :tooltip="action.tooltip"
-            :description="action.description">
-            <span class="icon is-small is-clickable has-margin-top-small">
-                <fa :icon="action.icon"
-                    size="xs"/>
-            </span>
-        </desc-tooltip>
-        <span>{{ action.label }}</span>
+    <a class="has-text-grey"
+        v-tooltip="i18n(action.tooltip)"
+        v-on="$listeners">
+        <span class="icon is-small is-clickable has-margin-top-small">
+            <fa :icon="action.icon"
+                size="xs"/>
+        </span>
+        <span class="is-bold">
+            {{ i18n(action.label) }}
+        </span>
     </a>
 </template>
 
 <script>
-import DescTooltip from './DescTooltip.vue';
+import { VTooltip } from 'v-tooltip';
 
 export default {
     name: 'Action',
 
-    inject: ['route', 'i18n'],
+    directives: { tooltip: VTooltip },
 
-    components: { DescTooltip },
+    inject: ['i18n', 'route', 'errorHandler'],
 
     props: {
         action: {
             type: Object,
             required: true,
         },
-        application: {
+        app: {
             type: Object,
             required: true,
         },
     },
 
-    methods: {
-        doAction() {
-            const route = this.route('controlPanel.action', {
-                application: this.application.id,
+    computed: {
+        params() {
+            return {
+                application: this.app.id,
                 action: this.action.id,
-            });
+            };
+        },
+    },
 
-            axios.post(route).then(({ data }) => {
-                if (data.url) {
-                    window.open(data.url, '_blank');
-                }
+    methods: {
+        handle() {
+            axios.post(this.route('controlPanel.action', this.params))
+                .then(({ data }) => {
+                    if (data.url) {
+                        window.open(data.url, '_blank');
+                    }
 
-                this.$emit('action');
-            });
+                    this.$emit('action-successful');
+                }).catch(this.errorHandler);
         },
     },
 };
-
 </script>
-<style scoped>
-   .action {
-       margin: auto;
-   }
-</style>

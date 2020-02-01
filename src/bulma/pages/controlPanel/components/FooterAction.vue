@@ -1,17 +1,17 @@
 <template>
     <confirmation v-if="action.confirmation"
         placement="bottom"
-        @confirm="$refs.action.doAction()">
+        @confirm="$refs.action.handle()">
         <action ref="action"
             :action="action"
-            :application="application"
+            :app="app"
             v-on="$listeners"/>
     </confirmation>
     <action v-else
         ref="action"
-        @click="$refs.action.doAction()"
+        @click="$refs.action.handle()"
         :action="action"
-        :application="application"
+        :app="app"
         v-on="$listeners"/>
 </template>
 
@@ -20,7 +20,7 @@ import Confirmation from '@enso-ui/confirmation/bulma';
 import Action from './Action.vue';
 
 export default {
-    name: 'ConfirmAction',
+    name: 'FooterAction',
 
     inject: ['route', 'i18n'],
 
@@ -31,7 +31,7 @@ export default {
             type: Object,
             required: true,
         },
-        application: {
+        app: {
             type: Object,
             required: true,
         },

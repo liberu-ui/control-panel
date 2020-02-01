@@ -1,47 +1,48 @@
 <template>
     <card class="is-rounded"
-        collapsible
-        :loading="loading">
+        collapsible>
         <card-header class="has-background-light">
             <template v-slot:title>
-                {{ application.name }}
+                {{ app.name }}
             </template>
             <template v-slot:controls>
                 <card-control>
                     <span class="icon is-small"
-                        v-tooltip="application.description">
+                        v-tooltip="i18n(app.description)">
                         <fa icon="info-circle"/>
                     </span>
                 </card-control>
-                <card-refresh @refresh="refresh()"/>
+                <card-refresh @refresh="refresh"/>
                 <card-collapse/>
             </template>
         </card-header>
-        <card-content v-if="statistics"
-            class="is-paddingless">
-            <div class="applications is-fullwidth is-marginless is-hoverable">
-                <stats v-for="group in order(statistics)"
+        <card-content class="has-padding-medium">
+            <div class="app has-margin-bottom-large">
+                <stats v-for="group in orderedStats"
                     :key="group.id"
                     :group="group"/>
             </div>
         </card-content>
-        <footer class="card-footer columns has-text-centered is-multiline is-marginless">
-            <div class="has-padding-medium column is-4 action-item"
-                 :key="link.id"
-                 v-for="link in order(links)">
+        <card-footer v-for="(chunk, index) in chunkedLinks"
+            :key="`link-${index}`">
+            <card-footer-item class="has-padding-medium"
+                v-for="link in chunk"
+                :key="link.id">
                 <footer-link :key="link.id"
                     :link="link"/>
-            </div>
-        </footer>
-        <footer class="card-footer columns has-text-centered is-multiline is-marginless">
-            <div class="has-padding-medium column is-4 action-item"
-                :key="action.id"
-                v-for="action in order(actions)">
-                <confirm-action :action="action"
-                    :application="application"
-                    @action="refresh()"/>
-            </div>
-        </footer>
+            </card-footer-item>
+        </card-footer>
+        <card-footer v-for="(chunk, index) in chunkedActions"
+            :key="`action-${index}`">
+            <card-footer-item class="has-padding-medium"
+                v-for="action in chunk"
+                :key="action.id">
+                <footer-action :key="action.id"
+                    :action="action"
+                    :app="app"
+                    @action-successful="refresh"/>
+            </card-footer-item>
+        </card-footer>
     </card>
 </template>
 
@@ -50,32 +51,28 @@ import { mapState } from 'vuex';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faGitlab, faPhp } from '@fortawesome/free-brands-svg-icons';
 import {
-    faBan, faBug, faCheckCircle, faClock, faCodeCommit,
-    faCubes, faDatabase, faDownload, faExclamationCircle,
-    faFileContract, faGlobeEurope, faHdd, faHourglassHalf,
-    faInfoCircle, faLink, faMemory, faMicrochip, faMouseAlt,
-    faPauseCircle, faPlayCircle, faPowerOff, faRocket, faServer,
-    faSignInAlt, faStopwatch, faStream, faTerminal, faTimesCircle,
+    faBan, faBug, faCheckCircle, faClock, faCodeCommit, faCubes, faDatabase, faDownload,
+    faExclamationCircle, faFileContract, faGlobeEurope, faHdd, faHourglassHalf,
+    faInfoCircle, faLink, faMemory, faMicrochip, faMouseAlt, faPauseCircle, faPlayCircle,
+    faPowerOff, faRocket, faSignInAlt, faStopwatch, faStream, faTerminal, faTimesCircle,
     faTrashAlt, faUserFriends, faUserPlus, faUsers,
 } from '@fortawesome/pro-duotone-svg-icons';
 import { VTooltip } from 'v-tooltip';
 import {
-    Card, CardCollapse, CardContent, CardControl, CardHeader, CardRefresh,
+    Card, CardCollapse, CardContent, CardControl, CardHeader, CardRefresh, CardFooter, CardFooterItem,
 } from '@enso-ui/card/bulma';
 import Stats from './Stats.vue';
 import FooterLink from './FooterLink.vue';
-import ConfirmAction from './ConfirmAction.vue';
+import FooterAction from './FooterAction.vue';
 import faEnso from './icons/faEnso';
+import faForge from './icons/faForge';
 
 library.add(
-    faTrashAlt, faPowerOff, faInfoCircle, faMemory,
-    faMicrochip, faHdd, faPhp, faCubes, faDatabase,
-    faHourglassHalf, faExclamationCircle, faUserPlus,
-    faUsers, faUserFriends, faGitlab, faCodeCommit, faServer,
-    faRocket, faSignInAlt, faMouseAlt, faLink, faTimesCircle,
-    faCheckCircle, faBan, faPlayCircle, faPauseCircle, faGlobeEurope,
-    faServer, faEnso, faBug, faClock, faStream, faTerminal, faFileContract,
-    faDownload, faStopwatch,
+    faBan, faBug, faCheckCircle, faClock, faCodeCommit, faCubes, faDatabase, faDownload,
+    faExclamationCircle, faFileContract, faGlobeEurope, faHdd, faHourglassHalf,
+    faInfoCircle, faLink, faMemory, faMicrochip, faMouseAlt, faPauseCircle, faPlayCircle,
+    faPowerOff, faRocket, faSignInAlt, faStopwatch, faStream, faTerminal, faTimesCircle,
+    faTrashAlt, faUserFriends, faUserPlus, faUsers, faPhp, faGitlab, faEnso, faForge,
 );
 
 export default {
@@ -84,13 +81,15 @@ export default {
     directives: { tooltip: VTooltip },
 
     components: {
-        ConfirmAction,
+        FooterAction,
         Card,
         CardHeader,
         CardControl,
         CardRefresh,
         CardCollapse,
         CardContent,
+        CardFooter,
+        CardFooterItem,
         Stats,
         FooterLink,
     },
@@ -98,11 +97,11 @@ export default {
     inject: ['i18n', 'errorHandler', 'route'],
 
     props: {
-        application: {
+        app: {
             type: Object,
             required: true,
         },
-        dates: {
+        dateInterval: {
             type: Object,
             required: true,
         },
@@ -110,137 +109,127 @@ export default {
 
     data: () => ({
         loading: false,
-        statistics: [],
+        stats: [],
+        summary: {
+            logins: 0,
+            requests: 0,
+            newUsers: 0,
+            sessions: 0,
+        },
         dynamicLinks: [],
-        actions: [],
+        dynamicActions: [],
         ongoingRequest: null,
     }),
 
     computed: {
         ...mapState(['enums']),
+        isEnso() {
+            return this.app.type === Number(this.enums.applicationTypes.Enso);
+        },
+        params() {
+            return {
+                startDate: this.dateInterval.min,
+                endDate: this.dateInterval.max,
+                type: this.app.type,
+            };
+        },
+        orderedStats() {
+            return [...this.stats].sort(this.sort);
+        },
+        chunkedLinks() {
+            return this.chunks([...this.links].sort(this.sort));
+        },
+        chunkedActions() {
+            return this.chunks([...this.dynamicActions].sort(this.sort));
+        },
         links() {
-            return [
-                ...this.application.links,
-                ...this.dynamicLinks,
-            ];
+            return [...this.app.links, ...this.dynamicLinks];
         },
     },
 
     watch: {
-        dates: 'refresh',
+        dateInterval: 'refresh',
     },
 
     created() {
-        this.loadStatistics();
+        this.fetch();
     },
 
     methods: {
-        request(request) {
-            this.ongoingRequest = axios.CancelToken.source();
-            this.loading = true;
-
-            request(this.ongoingRequest.token).then(() => {
-                this.loading = false;
+        fetch() {
+            this.statistics();
+            this.actions();
+            this.gitlab();
+            this.sentry();
+        },
+        statistics() {
+            axios.get(
+                this.route('controlPanel.statistics', this.app.id),
+                { params: this.params },
+            ).then(({ data }) => {
+                this.stats = [...this.stats, ...data];
+                this.updateSummary();
+                this.$emit('loaded');
             }).catch(this.errorHandler);
         },
-        loadStatistics() {
-            const request = cancelToken => this.call('controlPanel.statistics', cancelToken)
-                .then(({ data }) => {
-                    this.statistics = [
-                        ...this.statistics,
-                        ...data,
-                    ];
-
-                    this.$emit('loaded');
-                }).then(() => (`${this.application.type}` === this.enums.applicationTypes.Enso
-                    ? this.loadActions()
-                    : this.gitlab()));
-
-            this.request(request);
-        },
-        loadActions() {
-            const request = cancelToken => this.call('controlPanel.actions', cancelToken)
-                .then(({ data }) => {
-                    this.actions = data;
-                }).then(() => this.gitlab());
-
-            this.request(request);
+        actions() {
+            if (this.isEnso && this.dynamicActions.length === 0) {
+                axios.get(this.route('controlPanel.actions', this.app.id))
+                    .then(({ data }) => (this.dynamicActions = data))
+                    .catch(this.errorHandler);
+            }
         },
         gitlab() {
-            const request = cancelToken => this.call('controlPanel.gitlab', cancelToken)
-                .then(({ data }) => this.append(data)).then(() => this.sentry());
-
-            this.request(request);
+            if (this.app.gitlab) {
+                axios.get(this.route('controlPanel.gitlab', this.app.id))
+                    .then(({ data }) => this.merge(data))
+                    .catch(this.errorHandler);
+            }
         },
         sentry() {
-            const request = cancelToken => this.call('controlPanel.sentry', cancelToken)
-                .then(({ data }) => this.append(data));
-
-            this.request(request);
+            if (this.app.sentry) {
+                axios.get(this.route('controlPanel.sentry', this.app.id))
+                    .then(({ data }) => this.merge(data))
+                    .catch(this.errorHandler);
+            }
         },
-        append(data) {
-            this.statistics = [
-                ...this.statistics,
-                ...data.statistics,
-            ];
-            this.dynamicLinks = [
-                ...this.dynamicLinks,
-                ...data.links,
-            ];
+        merge({ groups, links }) {
+            this.stats = [...this.stats, ...groups];
+            this.dynamicLinks = [...this.dynamicLinks, ...links];
         },
         refresh() {
-            if (this.ongoingRequest) {
-                this.ongoingRequest.cancel();
-            }
-
             this.dynamicLinks = [];
-            this.statistics = [];
-            this.loadStatistics();
+            this.stats = [];
+            this.fetch();
         },
-        order(items) {
-            return [...items].sort((i1, i2) => i1.order - i2.order);
+        sort(first, second) {
+            return first.order - second.order;
         },
-        call(route, cancelToken) {
-            return axios.post(
-                this.route(route, this.application.id),
-                {
-                    startDate: this.dates.min,
-                    endDate: this.dates.max,
-                    type: this.application.type,
-                },
-                { cancelToken },
-            );
+        chunks(items) {
+            const chunkSize = 3;
+            const chunkCount = Math.ceil(items.length / chunkSize);
+
+            return Array.from({ length: chunkCount }, (value, index) => items
+                .slice(index * chunkSize, index * chunkSize + chunkSize));
+        },
+        updateSummary() {
+            Object.keys(this.summary)
+                .forEach(key => (this.summary[key] = Number(this.sensor(key))));
+        },
+        sensor(key) {
+            const index = this.stats
+                .findIndex(({ sensors }) => sensors.some(({ id }) => id === key));
+
+            return index >= 0
+                ? this.stats[index].sensors.find(({ id }) => id === key).value
+                : 0;
         },
     },
 };
 </script>
 
 <style lang="scss">
-    .applications {
-        font-size: 0.9rem;
-        padding-top: 30px;
-        padding-bottom: 10px;
-    }
-
     .action-item:not(:nth-child(3n)) {
         border-right: 1px solid #ededed;
-    }
-
-    .action-item {
-        border-bottom: 1px solid #ededed;
-    }
-
-    .action-item:nth-child(3n + 1):nth-last-child(-n+3)
-    {
-        border-bottom: none;
-    }
-
-    .action-item:nth-child(3n + 2):nth-last-child(-n + 2)
-    {
-        border-bottom: none;
-    }
-
-    .action-item:nth-child(3n):nth-last-child(1) {
-        border-bottom: none;
     }
 </style>

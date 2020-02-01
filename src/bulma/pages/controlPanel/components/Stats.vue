@@ -1,15 +1,19 @@
 <template>
-    <div class="columns is-multiline line">
-        <div class="line-group">
-            {{ i18n(group.label) }}
+    <div class="stats-wrapper has-padding-top-medium has-margin-top-large">
+        <divider class="is-bold"
+            :title="i18n(group.label)"
+            placement="left"/>
+        <div class="columns is-multiline has-margin-top-medium has-padding-left-large">
+            <stat class="column is-4 has-padding-medium has-text-centered"
+                v-for="stat in orderedSensors"
+                :key="stat.id"
+                :stat="stat"/>
         </div>
-        <stat v-for="stat in order(group.statistics)"
-            :stat="stat"
-            :key="stat.id"/>
     </div>
 </template>
 
 <script>
+import Divider from '@enso-ui/divider';
 import Stat from './Stat.vue';
 
 export default {
@@ -17,7 +21,7 @@ export default {
 
     inject: ['i18n'],
 
-    components: { Stat },
+    components: { Stat, Divider },
 
     props: {
         group: {
@@ -25,34 +29,21 @@ export default {
             required: true,
         },
     },
-    methods: {
-        order(items) {
-            return [...items].sort((i1, i2) => i1.order - i2.order);
+
+    computed: {
+        orderedSensors() {
+            return [...this.group.sensors]
+                .sort((first, second) => first.order - second.order);
         },
     },
 };
 </script>
 
 <style lang="scss">
-    .line {
-        position: relative;
-        font-weight: bold;
-        text-align: left;
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 15px;
-    }
-
-    .line {
-        border-top: 1px solid #dbdbdb;
-    }
-
-    .line-group {
-        position: absolute;
-        top: -11px;
-        left: 5px;
-        background: white;
-        padding-left:5px;
-        padding-right:5px;
+    .stats-wrapper {
+        .is-divider[data-title]::after {
+            background: white;
+            font-family: Arial, Helvetica, sans-serif;
+        }
     }
 </style>

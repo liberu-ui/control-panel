@@ -1,25 +1,27 @@
 <template>
-    <div class="column is-4"
-        :class="stat.class">
-        <desc-tooltip :tooltip="stat.tooltip"
-            :description="stat.description">
-            <fa v-if="stat.icon"
-                :icon="stat.icon"
-                class="has-margin-right-medium"/>
-        </desc-tooltip>
-        <span>{{ stat.value }}</span>
+    <div v-tooltip="stat.tooltip">
+        <span class="icon is-small"
+            :class="stat.class">
+            <fa :icon="stat.icon" size="sm"/>
+        </span>
+        <span class="stat has-text-grey is-bold">
+            <span v-if="needsFormat(stat.value)">
+                {{ stat.value | numberFormat(0) }}
+            </span>
+            <span v-else>
+                {{ stat.value }}
+            </span>
+        </span>
     </div>
 </template>
 
 <script>
-import DescTooltip from './DescTooltip.vue';
+import { VTooltip } from 'v-tooltip';
 
 export default {
     name: 'Stat',
 
-    inject: ['route', 'i18n'],
-
-    components: { DescTooltip },
+    directives: { tooltip: VTooltip },
 
     props: {
         stat: {
@@ -27,18 +29,17 @@ export default {
             default: null,
         },
     },
-    data() {
-        return {
-            desc: false,
-        };
+
+    methods: {
+        needsFormat(value) {
+            return Number.isInteger(value);
+        },
     },
 };
 </script>
-<style type="scss">
-    .v-popover {
-        display: inline-block;
-    }
-    .show-more {
-        font-size: 0.6em;
+
+<style lang="scss">
+    .stat {
+        font-size: 0.9em;
     }
 </style>
