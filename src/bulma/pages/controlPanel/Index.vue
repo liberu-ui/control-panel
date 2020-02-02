@@ -3,7 +3,7 @@
         <top :summary="summary"
             @update="dateInterval = $event"
             @refresh="refresh"/>
-        <div class="columns is-multiline is-mobile">
+        <div class="columns is-multiline">
             <div class="column is-one-third is-half-tablet"
                 v-for="app in apps"
                 :key="app.id">
