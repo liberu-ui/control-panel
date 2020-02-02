@@ -3,7 +3,13 @@
         collapsible>
         <card-header class="has-background-light">
             <template v-slot:title>
-                {{ app.name }}
+                <span class="has-margin-right-large">
+                    {{ app.name }}
+                </span>
+                <span class="tag is-small application-type"
+                    :class="isEnso ? 'is-success' : 'is-warning'">
+                    {{ enums.applicationTypes._get(app.type) }}
+                </span>
             </template>
             <template v-slot:controls>
                 <card-control>
@@ -231,5 +237,15 @@ export default {
 <style lang="scss">
     .action-item:not(:nth-child(3n)) {
         border-right: 1px solid #ededed;
+    }
+
+    .application-type.tag {
+        font-size: 0.8rem;
+        font-weight: bold;
+        height: 1.4em;
+        padding-left: 0.4em;
+        padding-right: 0.4em;
+        -webkit-box-shadow: 0 1px 1px rgba(10, 10, 10, 0.2);
+        box-shadow: 0 1px 1px rgba(10, 10, 10, 0.2);
     }
 </style>
