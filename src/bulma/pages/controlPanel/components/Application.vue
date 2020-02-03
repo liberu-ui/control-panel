@@ -55,7 +55,7 @@
 <script>
 import { mapState } from 'vuex';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faGitlab, faPhp } from '@fortawesome/free-brands-svg-icons';
+import { faGitlab, faPhp, faUbuntu } from '@fortawesome/free-brands-svg-icons';
 import {
     faBan, faBug, faCheckCircle, faClock, faCodeCommit, faCubes, faDatabase, faDownload,
     faExclamationCircle, faFileContract, faGlobeEurope, faHdd, faHourglassHalf,
@@ -65,7 +65,8 @@ import {
 } from '@fortawesome/pro-duotone-svg-icons';
 import { VTooltip } from 'v-tooltip';
 import {
-    Card, CardCollapse, CardContent, CardControl, CardHeader, CardRefresh, CardFooter, CardFooterItem,
+    Card, CardCollapse, CardContent, CardControl, CardHeader,
+    CardRefresh, CardFooter, CardFooterItem,
 } from '@enso-ui/card/bulma';
 import Stats from './Stats.vue';
 import FooterLink from './FooterLink.vue';
@@ -78,7 +79,7 @@ library.add(
     faExclamationCircle, faFileContract, faGlobeEurope, faHdd, faHourglassHalf,
     faInfoCircle, faLink, faMemory, faMicrochip, faMouseAlt, faPauseCircle, faPlayCircle,
     faPowerOff, faRocket, faSignInAlt, faStopwatch, faStream, faTerminal, faTimesCircle,
-    faTrashAlt, faUserFriends, faUserPlus, faUsers, faPhp, faGitlab, faEnso, faForge,
+    faTrashAlt, faUserFriends, faUserPlus, faUsers, faPhp, faUbuntu, faGitlab, faEnso, faForge,
 );
 
 export default {
