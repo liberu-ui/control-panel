@@ -21,7 +21,6 @@
     },
     "homepage": "https://github.com/enso-ui/control-panel#readme",
     "dependencies": {
-        "@enso-ui/bulma": "2.2.x",
         "@enso-ui/card": "1.0.x",
         "@enso-ui/confirmation": "1.0.x",
         "@enso-ui/directives": "1.0.x",
