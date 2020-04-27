@@ -1,10 +1,10 @@
 <template>
     <div class="columns is-centered">
-        <div class="column">
+        <div class="column is-narrow">
             <indicator :label="i18n('Logins')"
                 :value="summary.logins"/>
         </div>
-        <div class="column">
+        <div class="column is-narrow">
             <indicator :label="i18n('Requests')"
                 :value="summary.requests"/>
         </div>
@@ -23,11 +23,11 @@
                 </button>
             </div>
         </div>
-        <div class="column">
+        <div class="column is-narrow">
             <indicator :label="i18n('Users')"
                 :value="summary.newUsers"/>
         </div>
-        <div class="column">
+        <div class="column is-narrow">
             <indicator :label="i18n('Sessions')"
                 :value="summary.sessions"/>
         </div>
