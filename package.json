@@ -28,7 +28,7 @@
         "@enso-ui/filters": "^2.0",
         "@enso-ui/forms": "^2.0",
         "@enso-ui/tables": "^2.0",
-        "@enso-ui/ui": "^3.0",
+        "@enso-ui/ui": "^4.0",
         "@fortawesome/fontawesome-svg-core": "^1.2.2",
         "@fortawesome/free-brands-svg-icons": "^5.2.0",
         "@fortawesome/free-regular-svg-icons": "^5.2.0",
