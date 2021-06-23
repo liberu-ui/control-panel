@@ -3,7 +3,7 @@
         collapsible>
         <card-header class="has-background-light">
             <template v-slot:title>
-                <span class="has-margin-right-large">
+                <span class="mr-3">
                     {{ app.name }}
                 </span>
                 <span class="tag is-small application-type"
@@ -22,8 +22,8 @@
                 <card-collapse/>
             </template>
         </card-header>
-        <card-content class="has-padding-medium">
-            <div class="app has-margin-bottom-large">
+        <card-content class="p-2">
+            <div class="app mb-3">
                 <stats v-for="group in orderedStats"
                     :key="group.id"
                     :group="group"/>
@@ -31,7 +31,7 @@
         </card-content>
         <card-footer v-for="(chunk, index) in chunkedLinks"
             :key="`link-${index}`">
-            <card-footer-item class="has-padding-medium"
+            <card-footer-item class="p-2"
                 v-for="link in chunk"
                 :key="link.id">
                 <footer-link :key="link.id"
@@ -40,7 +40,7 @@
         </card-footer>
         <card-footer v-for="(chunk, index) in chunkedActions"
             :key="`action-${index}`">
-            <card-footer-item class="has-padding-medium"
+            <card-footer-item class="p-2"
                 v-for="action in chunk"
                 :key="action.id">
                 <footer-action :key="action.id"

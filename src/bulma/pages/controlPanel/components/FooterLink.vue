@@ -3,7 +3,7 @@
         target="_blank"
         :href="link.url"
         v-tooltip="link.tooltip">
-        <span class="icon is-small has-margin-top-small">
+        <span class="icon is-small mt-1">
             <fa :icon="link.icon"
                 size="xs"/>
         </span>

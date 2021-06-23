@@ -1,10 +1,10 @@
 <template>
-    <div class="stats-wrapper has-padding-top-medium has-margin-top-large">
+    <div class="stats-wrapper pt-2 mt-3">
         <divider class="is-bold"
             :title="i18n(group.label)"
             placement="left"/>
-        <div class="columns is-multiline has-margin-top-medium has-padding-left-large">
-            <stat class="column is-4 has-padding-medium has-text-centered"
+        <div class="columns is-multiline has-margin-top-medium pl-3">
+            <stat class="column is-4 p-2 has-text-centered"
                 v-for="stat in orderedSensors"
                 :key="stat.id"
                 :stat="stat"/>
