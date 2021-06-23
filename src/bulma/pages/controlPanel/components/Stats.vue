@@ -3,7 +3,7 @@
         <divider class="is-bold"
             :title="i18n(group.label)"
             placement="left"/>
-        <div class="columns is-multiline has-margin-top-medium pl-3">
+        <div class="columns is-multiline mt-2 pl-3">
             <stat class="column is-4 p-2 has-text-centered"
                 v-for="stat in orderedSensors"
                 :key="stat.id"
