@@ -1,35 +1,39 @@
 <template>
-    <div class="columns is-centered">
-        <div class="column is-narrow">
-            <indicator :label="i18n('Logins')"
-                :value="summary.logins"/>
-        </div>
-        <div class="column is-narrow">
-            <indicator :label="i18n('Requests')"
-                :value="summary.requests"/>
-        </div>
-        <div class="column is-narrow">
-            <enso-date-filter class="box raises-on-hover"
-                compact
-                v-on="$listeners"/>
-        </div>
-        <div class="column is-narrow">
-            <div class="box indicator raises-on-hover">
-                <button class="button is-small is-naked"
-                    @click="$emit('refresh')">
-                    <span class="icon is-small">
-                        <fa icon="sync"/>
-                    </span>
-                </button>
+    <div class="wrapper">
+        <div class="columns is-centered">
+            <div class="column is-narrow">
+                <indicator :label="i18n('Logins')"
+                    :value="summary.logins"/>
+            </div>
+            <div class="column is-narrow">
+                <indicator :label="i18n('Requests')"
+                    :value="summary.requests"/>
+            </div>
+            <div class="column is-narrow">
+                <div class="box indicator raises-on-hover">
+                    <button class="button is-small is-naked"
+                        @click="$emit('refresh')">
+                        <span class="icon is-small">
+                            <fa icon="sync"/>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div class="column is-narrow">
+                <indicator :label="i18n('Users')"
+                    :value="summary.newUsers"/>
+            </div>
+            <div class="column is-narrow">
+                <indicator :label="i18n('Sessions')"
+                    :value="summary.sessions"/>
             </div>
         </div>
-        <div class="column is-narrow">
-            <indicator :label="i18n('Users')"
-                :value="summary.newUsers"/>
-        </div>
-        <div class="column is-narrow">
-            <indicator :label="i18n('Sessions')"
-                :value="summary.sessions"/>
+         <div class="columns is-centered">
+            <div class="column is-narrow">
+                <enso-date-filter class="box raises-on-hover"
+                    compact
+                    v-on="$listeners"/>
+            </div>
         </div>
     </div>
 </template>

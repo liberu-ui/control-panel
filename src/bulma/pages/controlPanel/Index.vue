@@ -1,58 +1,67 @@
 <template>
     <div class="wrapper">
-        <div class="columns is-centered">
-            <div class="column is-narrow">
-                <enso-date-filter class="box raises-on-hover"
-                    compact
-                    v-on="$listeners"/>
-            </div>
-        </div>
-        <div class="columns is-centered">
-            <div class="column is-narrow">
-                <indicator :label="i18n('Logins')"
-                    :value="summary.logins"/>
-            </div>
-            <div class="column is-narrow">
-                <indicator :label="i18n('Requests')"
-                    :value="summary.requests"/>
-            </div>
-            <div class="column is-narrow">
-                <div class="box indicator raises-on-hover">
-                    <button class="button is-small is-naked"
-                        @click="$emit('refresh')">
-                        <span class="icon is-small">
-                            <fa icon="sync"/>
-                        </span>
-                    </button>
-                </div>
-            </div>
-            <div class="column is-narrow">
-                <indicator :label="i18n('Users')"
-                    :value="summary.newUsers"/>
-            </div>
-            <div class="column is-narrow">
-                <indicator :label="i18n('Sessions')"
-                    :value="summary.sessions"/>
+        <top :summary="summary"
+            @update="dateInterval = $event"
+            @refresh="refresh"/>
+        <div class="columns is-multiline">
+            <div class="column is-one-third is-half-tablet"
+                v-for="app in apps"
+                :key="app.id">
+                <application class="raises-on-hover"
+                    :app="app"
+                    :date-interval="dateInterval"
+                    @loaded="updateStats"
+                    ref="apps"/>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { EnsoDateFilter } from '@enso-ui/filters/bulma';
-import Indicator from './Indicator.vue';
+import Top from './components/Top.vue';
+import Application from './components/Application.vue';
 
 export default {
-    name: 'Top',
+    name: 'Index',
 
-    components: { Indicator, EnsoDateFilter },
+    components: { Top, Application },
 
-    inject: ['i18n'],
+    inject: ['route'],
 
-    props: {
+    data: () => ({
+        apps: [],
+        dateInterval: {
+            min: null,
+            max: null,
+        },
         summary: {
-            type: Object,
-            required: true,
+            logins: 0,
+            requests: 0,
+            newUsers: 0,
+            sessions: 0,
+        },
+    }),
+
+    created() {
+        this.fetch();
+    },
+
+    methods: {
+        fetch() {
+            axios.get(this.route('administration.applications.index'))
+                .then(({ data }) => (this.apps = data))
+                .catch((error) => this.handleError(error));
+        },
+        refresh() {
+            this.$refs.apps.forEach((app) => app.refresh());
+        },
+        updateStats() {
+            Object.keys(this.summary)
+                .forEach((key) => (this.summary[key] = this.sum(key)));
+        },
+        sum(key) {
+            return this.$refs.apps
+                .reduce((sum, app) => (sum + app.$data.summary[key]), 0);
         },
     },
 };
