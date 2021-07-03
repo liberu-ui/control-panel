@@ -3,7 +3,7 @@
         <div class="level">
             <div class="level-item">
                 <label class="label">
-                    {{ label }}: {{ value | numberFormat(0) }}
+                    {{ label }}: {{ formattedValue }}
                 </label>
             </div>
         </div>
@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { numberFormat } from '@enso-ui/mixins';
+
 export default {
     name: 'Indicator',
 
@@ -22,6 +24,12 @@ export default {
         value: {
             type: [String, Number],
             required: true,
+        },
+    },
+
+    computed: {
+        formattedValue() {
+            return numberFormat(this.value, 0);
         },
     },
 };

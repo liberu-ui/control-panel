@@ -5,18 +5,14 @@
             <fa :icon="stat.icon" size="sm"/>
         </span>
         <span class="stat has-text-grey is-bold">
-            <span v-if="needsFormat(stat.value)">
-                {{ stat.value | numberFormat(0) }}
-            </span>
-            <span v-else>
-                {{ stat.value }}
-            </span>
+            {{ value }}
         </span>
     </div>
 </template>
 
 <script>
 import { VTooltip } from 'v-tooltip';
+import { numberFormat } from '@enso-ui/mixins';
 
 export default {
     name: 'Stat',
@@ -30,9 +26,11 @@ export default {
         },
     },
 
-    methods: {
-        needsFormat(value) {
-            return Number.isInteger(value);
+    computed: {
+        value() {
+            return Number.isInteger(this.stat.value)
+                ? numberFormat(this.stat.value)
+                : this.stat.value;
         },
     },
 };
