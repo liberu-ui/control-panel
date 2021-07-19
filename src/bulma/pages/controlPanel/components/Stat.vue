@@ -5,14 +5,13 @@
             <fa :icon="stat.icon" size="sm"/>
         </span>
         <span class="stat has-text-grey is-bold">
-            {{ value }}
+            {{ stat.value }}
         </span>
     </div>
 </template>
 
 <script>
 import { VTooltip } from 'v-tooltip';
-import { numberFormat } from '@enso-ui/mixins';
 
 export default {
     name: 'Stat',
@@ -23,14 +22,6 @@ export default {
         stat: {
             type: Object,
             default: null,
-        },
-    },
-
-    computed: {
-        value() {
-            return Number.isInteger(this.stat.value)
-                ? numberFormat(this.stat.value)
-                : this.stat.value;
         },
     },
 };
