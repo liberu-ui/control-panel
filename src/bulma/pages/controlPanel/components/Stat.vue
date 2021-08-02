@@ -1,10 +1,10 @@
 <template>
     <div v-tooltip="stat.tooltip">
-        <span class="icon is-small"
-            :class="stat.class">
+        <span class="icon is-small">
             <fa :icon="stat.icon" size="sm"/>
         </span>
-        <span class="stat has-text-grey is-bold">
+        <span class="stat is-bold"
+            :class="stat.class">
             {{ stat.value }}
         </span>
     </div>
