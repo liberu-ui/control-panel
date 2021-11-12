@@ -21,14 +21,14 @@
     },
     "homepage": "https://github.com/enso-ui/control-panel#readme",
     "dependencies": {
-        "@enso-ui/card": "^2.0",
-        "@enso-ui/confirmation": "^1.0",
-        "@enso-ui/divider": "^1.0",
-        "@enso-ui/filters": "^2.0",
-        "@enso-ui/forms": "^2.0",
-        "@enso-ui/mixins": "^2.1",
-        "@enso-ui/tables": "^2.0",
-        "@enso-ui/ui": "^4.0",
+        "@enso-ui/card": "^3.0",
+        "@enso-ui/confirmation": "^2.0",
+        "@enso-ui/divider": "^2.0",
+        "@enso-ui/filters": "^3.0",
+        "@enso-ui/forms": "^3.0",
+        "@enso-ui/mixins": "^3.0",
+        "@enso-ui/tables": "^3.0",
+        "@enso-ui/ui": "^5.0",
         "@fortawesome/fontawesome-svg-core": "^1.2.2",
         "@fortawesome/free-brands-svg-icons": "^5.2.0",
         "@fortawesome/free-regular-svg-icons": "^5.2.0",
@@ -36,21 +36,19 @@
         "@fortawesome/pro-duotone-svg-icons": "^5.12.0",
         "@fortawesome/pro-regular-svg-icons": "^5.10.1",
         "@fortawesome/pro-solid-svg-icons": "^5.10.1",
-        "v-tooltip": "^2.0.0-rc.32",
-        "vue": "^2.5.16",
-        "vuex": "^3.0.0"
+        "v-tooltip": "4.0.0-alpha.1",
+        "vue": "^3.0",
+        "vuex": "^4.0.0"
     },
     "devDependencies": {
-        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-        "@vue/cli-plugin-babel": "^4.0.5",
-        "@vue/cli-plugin-eslint": "^4.0.5",
-        "@vue/cli-service": "^4.0.5",
+        "@vue/cli-plugin-babel": "5.0.0-beta.6",
+        "@vue/cli-plugin-eslint": "5.0.0-beta.6",
         "@vue/eslint-config-airbnb": "^5.0.0",
         "autoprefixer": "^9.6.1",
         "babel-eslint": "^10.0.1",
         "cross-env": "^6.0.0",
-        "eslint": "^6.8.0",
+        "eslint": "^7.0",
         "eslint-import-resolver-alias": "^1.1.2",
-        "eslint-plugin-vue": "^6.0.0"
+        "eslint-plugin-vue": "^8.0.0"
     }
 }
