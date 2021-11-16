@@ -2,7 +2,7 @@
     <card class="is-rounded"
         collapsible>
         <card-header class="has-background-light">
-            <template #:title>
+            <template #title>
                 <span class="mr-3">
                     {{ app.name }}
                 </span>
@@ -11,7 +11,7 @@
                     {{ enums.applicationTypes._get(app.type) }}
                 </span>
             </template>
-            <template #:controls>
+            <template #controls>
                 <card-control>
                     <span class="icon is-small"
                         v-tooltip="i18n(app.description)">

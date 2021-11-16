@@ -31,8 +31,7 @@
          <div class="columns is-centered">
             <div class="column is-narrow">
                 <enso-date-filter class="box raises-on-hover"
-                    compact
-                    v-on="$listeners"/>
+                    compact/>
             </div>
         </div>
     </div>
