@@ -12,12 +12,15 @@
 </template>
 
 <script>
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { VTooltip } from 'v-tooltip';
 
 export default {
     name: 'FooterLink',
 
     directives: { tooltip: VTooltip },
+
+    compoennts: { Fa },
 
     props: {
         link: {

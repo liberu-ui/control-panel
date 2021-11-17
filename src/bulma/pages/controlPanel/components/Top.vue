@@ -38,13 +38,14 @@
 </template>
 
 <script>
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { EnsoDateFilter } from '@enso-ui/filters/bulma';
 import Indicator from './Indicator.vue';
 
 export default {
     name: 'Top',
 
-    components: { Indicator, EnsoDateFilter },
+    components: { Fa, Indicator, EnsoDateFilter },
 
     inject: ['i18n'],
 

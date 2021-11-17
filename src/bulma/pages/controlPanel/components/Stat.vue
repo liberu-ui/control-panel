@@ -2,7 +2,8 @@
     <div v-tooltip="stat.tooltip">
         <span class="icon is-small"
             :class="stat.class">
-            <fa :icon="stat.icon" size="sm"/>
+            <fa :icon="stat.icon"
+                size="sm"/>
         </span>
         <span class="stat is-bold">
             {{ stat.value }}
@@ -11,12 +12,15 @@
 </template>
 
 <script>
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { VTooltip } from 'v-tooltip';
 
 export default {
     name: 'Stat',
 
     directives: { tooltip: VTooltip },
+
+    components: { Fa },
 
     props: {
         stat: {

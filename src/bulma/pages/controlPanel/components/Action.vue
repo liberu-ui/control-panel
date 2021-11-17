@@ -1,6 +1,6 @@
 <template>
     <a class="has-text-grey"
-        v-tooltip="i18n(action.tooltip)"   >
+        v-tooltip="i18n(action.tooltip)">
         <span class="icon is-small is-clickable mt-1">
             <fa :icon="action.icon"
                 size="xs"/>
@@ -12,12 +12,15 @@
 </template>
 
 <script>
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { VTooltip } from 'v-tooltip';
 
 export default {
     name: 'Action',
 
     directives: { tooltip: VTooltip },
+
+    components: { Fa },
 
     inject: ['i18n', 'route', 'errorHandler'],
 

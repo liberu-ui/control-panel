@@ -54,6 +54,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faGitlab, faPhp, faUbuntu } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -88,6 +89,7 @@ export default {
     directives: { tooltip: VTooltip },
 
     components: {
+        Fa,
         FooterAction,
         Card,
         CardHeader,
@@ -221,7 +223,7 @@ export default {
         },
         updateSummary() {
             Object.keys(this.summary)
-                .forEach((key) => (this.summary[key] = Number(this.sensor(key))));
+                .forEach(key => (this.summary[key] = Number(this.sensor(key))));
         },
         sensor(key) {
             const index = this.stats
