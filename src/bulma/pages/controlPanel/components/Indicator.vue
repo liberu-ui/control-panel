@@ -21,7 +21,7 @@ export default {
             type: String,
             required: true,
         },
-        value: {
+        modelValue: {
             type: [String, Number],
             required: true,
         },
@@ -29,7 +29,7 @@ export default {
 
     computed: {
         formattedValue() {
-            return numberFormat(this.value, 0);
+            return numberFormat(this.modelValue, 0);
         },
     },
 };
