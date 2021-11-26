@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import 'v-tooltip/dist/v-tooltip.css';
+import { VTooltip } from 'v-tooltip';
 import { mapState } from 'vuex';
 import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -64,7 +66,6 @@ import {
     faPowerOff, faRocket, faSignInAlt, faStopwatch, faStream, faTerminal, faTimesCircle,
     faTrashAlt, faUserFriends, faUserPlus, faUsers,
 } from '@fortawesome/pro-duotone-svg-icons';
-import { VTooltip } from 'v-tooltip';
 import {
     Card, CardCollapse, CardContent, CardControl, CardHeader,
     CardRefresh, CardFooter, CardFooterItem,
