@@ -104,7 +104,7 @@ export default {
         FooterLink,
     },
 
-    inject: ['i18n', 'errorHandler', 'route'],
+    inject: ['http', 'i18n', 'errorHandler', 'route'],
 
     props: {
         app: {
@@ -116,6 +116,8 @@ export default {
             required: true,
         },
     },
+
+    emits: ['loaded'],
 
     data: () => ({
         loading: false,
@@ -173,7 +175,7 @@ export default {
             this.sentry();
         },
         statistics() {
-            axios.get(
+            this.http.get(
                 this.route('controlPanel.statistics', this.app.id),
                 { params: this.params },
             ).then(({ data }) => {
@@ -184,21 +186,21 @@ export default {
         },
         actions() {
             if (this.isEnso && this.dynamicActions.length === 0) {
-                axios.get(this.route('controlPanel.actions', this.app.id))
+                this.http.get(this.route('controlPanel.actions', this.app.id))
                     .then(({ data }) => (this.dynamicActions = data))
                     .catch(this.errorHandler);
             }
         },
         gitlab() {
             if (this.app.gitlab) {
-                axios.get(this.route('controlPanel.gitlab', this.app.id))
+                this.http.get(this.route('controlPanel.gitlab', this.app.id))
                     .then(({ data }) => this.merge(data))
                     .catch(this.errorHandler);
             }
         },
         sentry() {
             if (this.app.sentry) {
-                axios.get(this.route('controlPanel.sentry', this.app.id))
+                this.http.get(this.route('controlPanel.sentry', this.app.id))
                     .then(({ data }) => this.merge(data))
                     .catch(this.errorHandler);
             }

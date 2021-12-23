@@ -55,5 +55,7 @@ export default {
             required: true,
         },
     },
+
+    emits: ['refresh'],
 };
 </script>

@@ -23,7 +23,7 @@ export default {
 
     components: { Fa },
 
-    inject: ['i18n', 'route', 'errorHandler'],
+    inject: ['http', 'i18n', 'route', 'errorHandler'],
 
     props: {
         action: {
@@ -36,6 +36,8 @@ export default {
         },
     },
 
+    emits: ['action-successful'],
+
     computed: {
         params() {
             return {
@@ -47,7 +49,7 @@ export default {
 
     methods: {
         handle() {
-            axios.post(this.route('controlPanel.action', this.params))
+            this.http.post(this.route('controlPanel.action', this.params))
                 .then(({ data }) => {
                     if (data.url) {
                         window.open(data.url, '_blank');
