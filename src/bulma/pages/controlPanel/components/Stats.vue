@@ -19,9 +19,9 @@ import Stat from './Stat.vue';
 export default {
     name: 'Stats',
 
-    inject: ['i18n'],
-
     components: { Stat, Divider },
+
+    inject: ['i18n'],
 
     props: {
         group: {
