@@ -1,7 +1,6 @@
 <template>
     <a class="has-text-grey"
-        v-tooltip="i18n(action.tooltip)"
-        v-on="$listeners">
+        v-tooltip="i18n(action.tooltip)">
         <span class="icon is-small is-clickable mt-1">
             <fa :icon="action.icon"
                 size="xs"/>
@@ -13,14 +12,18 @@
 </template>
 
 <script>
+import 'v-tooltip/dist/v-tooltip.css';
 import { VTooltip } from 'v-tooltip';
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 
 export default {
     name: 'Action',
 
     directives: { tooltip: VTooltip },
 
-    inject: ['i18n', 'route', 'errorHandler'],
+    components: { Fa },
+
+    inject: ['http', 'i18n', 'route', 'errorHandler'],
 
     props: {
         action: {
@@ -33,6 +36,8 @@ export default {
         },
     },
 
+    emits: ['action-successful'],
+
     computed: {
         params() {
             return {
@@ -44,7 +49,7 @@ export default {
 
     methods: {
         handle() {
-            axios.post(this.route('controlPanel.action', this.params))
+            this.http.post(this.route('controlPanel.action', this.params))
                 .then(({ data }) => {
                     if (data.url) {
                         window.open(data.url, '_blank');

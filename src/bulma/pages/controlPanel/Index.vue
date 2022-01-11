@@ -26,7 +26,7 @@ export default {
 
     components: { Top, Application },
 
-    inject: ['route'],
+    inject: ['http', 'route'],
 
     data: () => ({
         apps: [],
@@ -48,16 +48,16 @@ export default {
 
     methods: {
         fetch() {
-            axios.get(this.route('administration.applications.index'))
+            this.http.get(this.route('administration.applications.index'))
                 .then(({ data }) => (this.apps = data))
-                .catch((error) => this.handleError(error));
+                .catch(error => this.handleError(error));
         },
         refresh() {
-            this.$refs.apps.forEach((app) => app.refresh());
+            this.$refs.apps.forEach(app => app.refresh());
         },
         updateStats() {
             Object.keys(this.summary)
-                .forEach((key) => (this.summary[key] = this.sum(key)));
+                .forEach(key => (this.summary[key] = this.sum(key)));
         },
         sum(key) {
             return this.$refs.apps

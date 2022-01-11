@@ -3,11 +3,11 @@
         <div class="columns is-centered">
             <div class="column is-narrow">
                 <indicator :label="i18n('Logins')"
-                    :value="summary.logins"/>
+                    :model-value="summary.logins"/>
             </div>
             <div class="column is-narrow">
                 <indicator :label="i18n('Requests')"
-                    :value="summary.requests"/>
+                    :model-value="summary.requests"/>
             </div>
             <div class="column is-narrow">
                 <div class="box indicator raises-on-hover">
@@ -21,31 +21,31 @@
             </div>
             <div class="column is-narrow">
                 <indicator :label="i18n('Users')"
-                    :value="summary.newUsers"/>
+                    :model-value="summary.newUsers"/>
             </div>
             <div class="column is-narrow">
                 <indicator :label="i18n('Sessions')"
-                    :value="summary.sessions"/>
+                    :model-value="summary.sessions"/>
             </div>
         </div>
          <div class="columns is-centered">
             <div class="column is-narrow">
                 <enso-date-filter class="box raises-on-hover"
-                    compact
-                    v-on="$listeners"/>
+                    compact/>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { EnsoDateFilter } from '@enso-ui/filters/bulma';
 import Indicator from './Indicator.vue';
 
 export default {
     name: 'Top',
 
-    components: { Indicator, EnsoDateFilter },
+    components: { Fa, Indicator, EnsoDateFilter },
 
     inject: ['i18n'],
 
@@ -55,5 +55,7 @@ export default {
             required: true,
         },
     },
+
+    emits: ['refresh'],
 };
 </script>

@@ -2,7 +2,7 @@
     <card class="is-rounded"
         collapsible>
         <card-header class="has-background-light">
-            <template v-slot:title>
+            <template #title>
                 <span class="mr-3">
                     {{ app.name }}
                 </span>
@@ -11,7 +11,7 @@
                     {{ enums.applicationTypes._get(app.type) }}
                 </span>
             </template>
-            <template v-slot:controls>
+            <template #controls>
                 <card-control>
                     <span class="icon is-small"
                         v-tooltip="i18n(app.description)">
@@ -53,7 +53,10 @@
 </template>
 
 <script>
+import 'v-tooltip/dist/v-tooltip.css';
+import { VTooltip } from 'v-tooltip';
 import { mapState } from 'vuex';
+import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faGitlab, faPhp, faUbuntu } from '@fortawesome/free-brands-svg-icons';
 import {
@@ -63,7 +66,6 @@ import {
     faPowerOff, faRocket, faSignInAlt, faStopwatch, faStream, faTerminal, faTimesCircle,
     faTrashAlt, faUserFriends, faUserPlus, faUsers,
 } from '@fortawesome/pro-duotone-svg-icons';
-import { VTooltip } from 'v-tooltip';
 import {
     Card, CardCollapse, CardContent, CardControl, CardHeader,
     CardRefresh, CardFooter, CardFooterItem,
@@ -88,6 +90,7 @@ export default {
     directives: { tooltip: VTooltip },
 
     components: {
+        Fa,
         FooterAction,
         Card,
         CardHeader,
@@ -101,7 +104,7 @@ export default {
         FooterLink,
     },
 
-    inject: ['i18n', 'errorHandler', 'route'],
+    inject: ['http', 'i18n', 'errorHandler', 'route'],
 
     props: {
         app: {
@@ -113,6 +116,8 @@ export default {
             required: true,
         },
     },
+
+    emits: ['loaded'],
 
     data: () => ({
         loading: false,
@@ -170,7 +175,7 @@ export default {
             this.sentry();
         },
         statistics() {
-            axios.get(
+            this.http.get(
                 this.route('controlPanel.statistics', this.app.id),
                 { params: this.params },
             ).then(({ data }) => {
@@ -181,21 +186,21 @@ export default {
         },
         actions() {
             if (this.isEnso && this.dynamicActions.length === 0) {
-                axios.get(this.route('controlPanel.actions', this.app.id))
+                this.http.get(this.route('controlPanel.actions', this.app.id))
                     .then(({ data }) => (this.dynamicActions = data))
                     .catch(this.errorHandler);
             }
         },
         gitlab() {
             if (this.app.gitlab) {
-                axios.get(this.route('controlPanel.gitlab', this.app.id))
+                this.http.get(this.route('controlPanel.gitlab', this.app.id))
                     .then(({ data }) => this.merge(data))
                     .catch(this.errorHandler);
             }
         },
         sentry() {
             if (this.app.sentry) {
-                axios.get(this.route('controlPanel.sentry', this.app.id))
+                this.http.get(this.route('controlPanel.sentry', this.app.id))
                     .then(({ data }) => this.merge(data))
                     .catch(this.errorHandler);
             }
