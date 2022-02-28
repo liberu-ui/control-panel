@@ -1,6 +1,6 @@
 {
     "name": "@enso-ui/control-panel",
-    "version": "4.0.13",
+    "version": "5.0.0",
     "description": "Basic control-panel package",
     "main": "src/bulma/pages/controlPanel/Index.vue",
     "scripts": {
