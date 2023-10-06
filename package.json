@@ -1,6 +1,6 @@
 {
     "name": "@liberu-ui/control-panel",
-    "version": "5.0.4",
+    "version": "5.0.5",
     "description": "Basic control-panel package",
     "main": "src/bulma/pages/controlPanel/Index.vue",
     "scripts": {
