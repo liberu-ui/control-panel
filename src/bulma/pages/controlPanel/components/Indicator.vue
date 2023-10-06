@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { numberFormat } from '@enso-ui/mixins';
+import { numberFormat } from '@liberu-ui/mixins';
 
 export default {
     name: 'Indicator',

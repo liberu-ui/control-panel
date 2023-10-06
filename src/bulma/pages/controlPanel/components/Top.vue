@@ -39,7 +39,7 @@
 
 <script>
 import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
-import { EnsoDateFilter } from '@enso-ui/filters/bulma';
+import { EnsoDateFilter } from '@liberu-ui/filters/bulma';
 import Indicator from './Indicator.vue';
 
 export default {

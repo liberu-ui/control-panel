@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Divider from '@enso-ui/divider';
+import Divider from '@liberu-ui/divider';
 import Stat from './Stat.vue';
 
 export default {
