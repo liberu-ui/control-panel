@@ -69,7 +69,7 @@ import {
 import {
     Card, CardCollapse, CardContent, CardControl, CardHeader,
     CardRefresh, CardFooter, CardFooterItem,
-} from '@enso-ui/card/bulma';
+} from '@liberu-ui/card/bulma';
 import Stats from './Stats.vue';
 import FooterLink from './FooterLink.vue';
 import FooterAction from './FooterAction.vue';

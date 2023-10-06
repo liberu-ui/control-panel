@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Confirmation from '@enso-ui/confirmation/bulma';
+import Confirmation from '@liberu-ui/confirmation/bulma';
 import Action from './Action.vue';
 
 export default {
